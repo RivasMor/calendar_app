@@ -10,7 +10,6 @@ import {
   TextField
 } from "@mui/material";
 import { useState } from "react";
-
 const DialogEvent = ({ open, close, date, addEvent }) => {
   
   
@@ -36,6 +35,10 @@ const DialogEvent = ({ open, close, date, addEvent }) => {
   const places = ['   ','Terminal','Plaza']
   const hours = ['  ','10:00 - 11:30', '10:30 - 12:00','16:30 - 18:00', '17:00 - 18:30'];
   const publishers = [' ','Erika','Brian','Leo A.','Nelly']
+
+  const func1 = () =>{
+    addEvent({place: option_place, pub1: option_pub1, pub2:option_pub2, hour:option_hour, date:date});
+  }
   
   return (
     <>
@@ -159,7 +162,7 @@ const DialogEvent = ({ open, close, date, addEvent }) => {
         </DialogContent>
 
         <DialogActions>
-        <Button onClick={() => addEvent({place: option_place, pub1: option_pub1, pub2:option_pub2, hour:option_hour, date:date})} autoFocus >
+        <Button onClick={func1 } autoFocus >
             Agregar
           </Button>
           <Button onClick={close} autoFocus>
@@ -167,6 +170,7 @@ const DialogEvent = ({ open, close, date, addEvent }) => {
           </Button>
         </DialogActions>
       </Dialog>
+      
     </>
   );
 };

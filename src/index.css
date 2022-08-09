@@ -1,0 +1,9 @@
+.swal2-container {
+    z-index: 10000!important;
+
+  }
+  .swal2-popup {
+    font-size: 1rem !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    font-weight: bold !important;
+  }
