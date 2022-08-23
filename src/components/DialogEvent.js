@@ -9,7 +9,10 @@ import {
   Box,
   TextField
 } from "@mui/material";
-import { useState } from "react";
+
+import db from "../Firebase/firebaseConfig";
+import { collection, getDocs} from "firebase/firestore";
+import { useState,useEffect } from "react";
 const DialogEvent = ({ open, close, date, addEvent }) => {
   
   
@@ -31,10 +34,27 @@ const DialogEvent = ({ open, close, date, addEvent }) => {
   const changeOption_hour = (event) => {
     setOption_hour(event.target.value);
   };
+  const [publishers, setPublishers] = useState([]);
 
   const places = ['   ','Terminal','Plaza']
   const hours = ['  ','10:00 - 11:30', '10:30 - 12:00','16:30 - 18:00', '17:00 - 18:30'];
-  const publishers = [' ','Erika','Brian','Leo A.','Nelly']
+  const publishers1 = [' ','Erika M.','Brian M.','Leandro A.','Nelly A.','Amelia M.','Julieta T.']
+  useEffect(() => {    
+    const obtenerDatos = async () =>{
+      const datos = await getDocs(collection(db,'publishers')); 
+      let dataFromFirestone = datos.docs.map((document) => ({
+        id: document.id,
+        ...document.data(),
+      }));
+      console.log(dataFromFirestone)
+      setPublishers(dataFromFirestone);
+  
+    }   
+    obtenerDatos();
+    console.log(publishers)
+    
+  }, []);
+
 
   const func1 = () =>{
     addEvent({place: option_place, pub1: option_pub1, pub2:option_pub2, hour:option_hour, date:date});
@@ -75,8 +95,8 @@ const DialogEvent = ({ open, close, date, addEvent }) => {
                 variant="standard"
               >
                 {publishers.map((option,i) => (
-                  <option key={"pub_"+i} value={option}>
-                    {option}
+                  <option key={"pub_"+i} value={option.name}>
+                    {option.name}
                   </option>
                 ))}
               </TextField>
@@ -93,8 +113,8 @@ const DialogEvent = ({ open, close, date, addEvent }) => {
                 variant="standard"
               >
                 {publishers.map((option,i) => (
-                  <option key={'pub2_'+i} value={option}>
-                    {option}
+                  <option key={'pub2_'+i} value={option.name}>
+                    {option.name}
                   </option>
                 ))}
               </TextField>
@@ -162,6 +182,7 @@ const DialogEvent = ({ open, close, date, addEvent }) => {
         </DialogContent>
 
         <DialogActions>
+
         <Button onClick={func1 } autoFocus >
             Agregar
           </Button>
