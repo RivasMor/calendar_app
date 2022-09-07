@@ -1,17 +1,31 @@
 import { Grid, Box, Typography } from "@mui/material";
 import Day from "./Day";
-const Week = ({ nameDays,data,addEvent }) => {
+const Week = ({addEvent,data }) => {
+ 
   return (
     <>
-      {nameDays.map((day, key) => (
-        <Grid item container>
-        <Grid  item xs={1.7} md={1.7} key={"name_day_" + key} sx={{backgroundColor:'#581845'}}>
-          <Box sx={{ height: 50, border: "1px dashed grey"}}> <Typography align="center"  sx={{color:'white', marginTop:'4%'}}>{day}</Typography></Box>
-        </Grid>
-        </Grid>
-      ))
+    <Grid container  sx={{
+          
+          justifyContent:'center',
+          alignContent:'center'
+        }} >
+      
+     
+      {
+        data.map((day,key) => {
+           return day.value === -1 ? <Grid item  xs>
+          <Box sx={{ height: 100, border: "1px solid gray" }}><Typography></Typography></Box>
+          </Grid> :
+          <Day data={day} addEvent = {addEvent}/>
+          
+        })
       }
-    </>
+      
+      
+    </Grid>
+
+     
+      </>
   );
 };
 export default Week;

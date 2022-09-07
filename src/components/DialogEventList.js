@@ -59,9 +59,7 @@ const DialogEventList = ({ open, close, date }) => {
   //Functions
   const addEvent = (newElement) => {
     setEvents([...events, newElement]);
-    events.forEach((el) => {
-      console.log(el);
-    });
+    
     setOpenDialog(false);
     setSwalProps({
       show: true,
@@ -75,8 +73,10 @@ const DialogEventList = ({ open, close, date }) => {
         hour: newElement.hour,
         place: newElement.place,
         pub1 : newElement.pub1,
-        pub2: newElement.pub2
+        pub2: newElement.pub2,
+        color: newElement.color
       });
+      
       console.log("Document written with ID: ", docRef.id);
     }
       guardarDatos();
@@ -101,8 +101,7 @@ const DialogEventList = ({ open, close, date }) => {
   return (
     <>
       <Dialog
-        maxWidth="md"
-        fullWidth
+        maxWidth="md"        
         open={open}
         onClose={close}
         aria-labelledby="alert-dialog-title"
@@ -137,7 +136,7 @@ const DialogEventList = ({ open, close, date }) => {
                   <ListItemText key={"info3_" + i}>{event.hour}</ListItemText>
                 </MenuItem>
                 
-                <IconButton aria-label="delete" color="primary" onClick={ () =>{removeEvent(event.id)}}>
+                <IconButton sx={{marginLeft:'40%'}} aria-label="delete" color="primary" onClick={ () =>{removeEvent(event.id)}}>
                   <DeleteIcon />
                 </IconButton>
                 
@@ -147,10 +146,10 @@ const DialogEventList = ({ open, close, date }) => {
         })}
 
         <DialogActions>
-          <IconButton onClick={handleClickOpen}>
+          <IconButton onClick={handleClickOpen} sx={{ backgroundColor: "#95E924", color: "black" }}>
             <AddIcon />
           </IconButton>
-          <Button onClick={close} autoFocus>
+          <Button sx={{ backgroundColor: "#95E924", color: "black" }} onClick={close} >
             Close
           </Button>
         </DialogActions>

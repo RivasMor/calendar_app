@@ -7,16 +7,21 @@ import {
   DialogContent,
   DialogContentText,
   Box,
-  TextField
+  TextField,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 
 import db from "../Firebase/firebaseConfig";
-import { collection, getDocs} from "firebase/firestore";
-import { useState,useEffect } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { useState, useEffect } from "react";
 const DialogEvent = ({ open, close, date, addEvent }) => {
   
-  
-    //Hooks all Select 
+  const [publishers, setPublishers] = useState([]);
+  const [places, setPlaces] = useState([]);
+  //Hooks all Select
   const [option_pub1, setOption_pub1] = useState();
   const changeOption_pub1 = (event) => {
     setOption_pub1(event.target.value);
@@ -25,7 +30,7 @@ const DialogEvent = ({ open, close, date, addEvent }) => {
   const changeOption_pub2 = (event) => {
     setOption_pub2(event.target.value);
   };
-    
+
   const [option_place, setOption_place] = useState();
   const changeOption_place = (event) => {
     setOption_place(event.target.value);
@@ -34,32 +39,55 @@ const DialogEvent = ({ open, close, date, addEvent }) => {
   const changeOption_hour = (event) => {
     setOption_hour(event.target.value);
   };
-  const [publishers, setPublishers] = useState([]);
+  const [color, setColor] = useState('');
+  const changeOption_color = (event) => {
+    setColor(event.target.value);
+  };
 
-  const places = ['   ','Terminal','Plaza']
-  const hours = ['  ','10:00 - 11:30', '10:30 - 12:00','16:30 - 18:00', '17:00 - 18:30'];
-  const publishers1 = [' ','Erika M.','Brian M.','Leandro A.','Nelly A.','Amelia M.','Julieta T.']
-  useEffect(() => {    
-    const obtenerDatos = async () =>{
-      const datos = await getDocs(collection(db,'publishers')); 
+  
+  const hours = [
+    "  ",
+    "10:00 - 11:30",
+    "10:30 - 12:00",
+    "16:30 - 18:00",
+    "17:00 - 18:30",
+  ];
+
+  useEffect(() => {
+    const obtenerDatos = async () => {
+      const datos = await getDocs(collection(db, "publishers"));
       let dataFromFirestone = datos.docs.map((document) => ({
         id: document.id,
         ...document.data(),
       }));
-      console.log(dataFromFirestone)
       setPublishers(dataFromFirestone);
-  
-    }   
+    };
     obtenerDatos();
-    console.log(publishers)
+  }, []);
+  useEffect(() => {
+    const obtenerDatos = async () => {
+      const datos = await getDocs(collection(db, "places"));
+      let dataFromFirestone = datos.docs.map((document) => ({
+        id: document.id,
+        ...document.data(),
+      }));
+      setPlaces(dataFromFirestone);
+    };
+    obtenerDatos();
     
   }, []);
 
+  const func1 = () => {
+    addEvent({
+      place: option_place,
+      pub1: option_pub1,
+      pub2: option_pub2,
+      hour: option_hour,
+      date: date,
+      color: color
+    });
+  };
 
-  const func1 = () =>{
-    addEvent({place: option_place, pub1: option_pub1, pub2:option_pub2, hour:option_hour, date:date});
-  }
-  
   return (
     <>
       <Dialog
@@ -75,14 +103,14 @@ const DialogEvent = ({ open, close, date, addEvent }) => {
         </DialogTitle>
         <DialogContent sx={{ width: "100", height: "100" }}>
           <DialogContentText id="alert-dialog-description">
-          <Box
+            <Box
               component="form"
               sx={{
                 "& .MuiTextField-root": { m: 1, width: "25ch" },
               }}
               noValidate
               autoComplete="off"
-            >                   
+            >
               <TextField
                 id="selectPublisher1"
                 select
@@ -91,11 +119,12 @@ const DialogEvent = ({ open, close, date, addEvent }) => {
                 onChange={changeOption_pub1}
                 SelectProps={{
                   native: true,
-                }}                
+                }}
                 variant="standard"
               >
-                {publishers.map((option,i) => (
-                  <option key={"pub_"+i} value={option.name}>
+                
+                {publishers.map((option, i) => (
+                  <option key={"pub_" + i} value={option.name}>
                     {option.name}
                   </option>
                 ))}
@@ -109,16 +138,15 @@ const DialogEvent = ({ open, close, date, addEvent }) => {
                 onChange={changeOption_pub2}
                 SelectProps={{
                   native: true,
-                }}                
+                }}
                 variant="standard"
               >
-                {publishers.map((option,i) => (
-                  <option key={'pub2_'+i} value={option.name}>
+                {publishers.map((option, i) => (
+                  <option key={"pub2_" + i} value={option.name}>
                     {option.name}
                   </option>
                 ))}
               </TextField>
-              
             </Box>
 
             <Box
@@ -128,25 +156,41 @@ const DialogEvent = ({ open, close, date, addEvent }) => {
               }}
               noValidate
               autoComplete="off"
-            >                   
+            >
               <TextField
                 id="selectPlace"
                 select
-                label= "Lugar"
+                label="Lugar"
                 value={option_place}
                 onChange={changeOption_place}
                 SelectProps={{
                   native: true,
                 }}
-                
                 variant="standard"
-              >
-                {places.map((option,i) => (
-                  <option key={"place_"+i} value={option}>
-                    {option}
+                >
+                  {places.map((option, i) => (
+                  <option key={"place_" + i} value={option.name}>
+                    {option.name}
                   </option>
-                ))}
+                ))}               
+                
               </TextField>
+              
+              <FormControl variant="standard" size='md' sx={{ m: 1, minWidth: 100, height: 5 }}>
+                <InputLabel id="demo-simple-select-label">Color</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={color}
+                  label='Color'
+                  onChange = {changeOption_color}
+                >
+                  <MenuItem value={"#2EF8A0"}>Verde</MenuItem>
+                  <MenuItem value={'#ECFD18'}>Amarillo</MenuItem>
+                  <MenuItem value={"#66FFFF"}>Celeste</MenuItem>
+                  <MenuItem value={"#FF0080"}>Rosa</MenuItem>
+                </Select>
+              </FormControl>
               
             </Box>
             <Box
@@ -156,8 +200,8 @@ const DialogEvent = ({ open, close, date, addEvent }) => {
               }}
               noValidate
               autoComplete="off"
-            >             
-            <TextField
+            >
+              <TextField
                 id="selectHour"
                 select
                 label="Horario"
@@ -166,32 +210,26 @@ const DialogEvent = ({ open, close, date, addEvent }) => {
                 SelectProps={{
                   native: true,
                 }}
-                
                 variant="standard"
               >
-                {hours.map((option,i) => (
-                  <option key={'hour'+i} value={option}>
+                {hours.map((option, i) => (
+                  <option key={"hour" + i} value={option}>
                     {option}
                   </option>
                 ))}
               </TextField>
-              </Box>
-
-           
+            </Box>
           </DialogContentText>
         </DialogContent>
-
         <DialogActions>
-
-        <Button onClick={func1 } autoFocus >
+          <Button sx={{ backgroundColor: "#95E924", color: "black" }} onClick={func1} autoFocus>
             Agregar
           </Button>
-          <Button onClick={close} autoFocus>
+          <Button sx={{ backgroundColor: "#95E924", color: "black" }} onClick={close} autoFocus>
             Close
           </Button>
         </DialogActions>
       </Dialog>
-      
     </>
   );
 };
